@@ -9,33 +9,20 @@
 #define MAX_SOURCE_LINE_SIZE 4096
 #define MAX_COMMAD_SIZE 64
 #define MAX_PARAM_SIZE 1024
-#define COMMAND_PRINTSTRING "PrintString"
-#define COMMAND_PRINTSTRINGLOOP "PrintStringLoop"
-#define COMMAND_NEWLINE "Newline"
-#define COMMAND_WAITFORKEYPRESS "WaitForKeyPress"
+#define COMMAND_PRINTSTRING "PRINTSTRING"
+#define COMMAND_PRINTSTRINGLOOP "PRINTSTRINGLOOP"
+#define COMMAND_NEWLINE "NEWLINE"
 
 int g_iScriptSize = 0;
 char ** g_pptrScript;
 int g_iCurrScriptLine;
 int g_iCurrentLineChar;
 
-int kbhit()
-{
-    int ch = getch();
-
-    if (ch != ERR) {
-        ungetch(ch);
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
 void LoadScript(char * pstrFilename)
 {
     FILE * pScriptFile;
 
-    check(!(pScriptFile = fopen(pstrFilename, "rb")), "File I/O error.\n");
+    pScriptFile = fopen(pstrFilename, "rb");
 
     while (!feof(pScriptFile))
         if (fgetc(pScriptFile) == '\n')
@@ -43,8 +30,7 @@ void LoadScript(char * pstrFilename)
     ++g_iScriptSize;
 
     fclose(pScriptFile);
-
-    check(!(pScriptFile = fopen(pstrFilename, "rb")), "File I/O error.\n");
+    pScriptFile = fopen(pstrFilename, "rb");
 
     g_pptrScript = (char **) malloc(g_iScriptSize * sizeof(char *));
 
@@ -55,9 +41,6 @@ void LoadScript(char * pstrFilename)
     }
 
     fclose(pScriptFile);
-
-error:
-    exit(0);
 }
 
 void UnloadScript()
@@ -174,13 +157,6 @@ void RunScript()
             printf("\n");
         }
 
-        else if (strcmp(pstrCommand, COMMAND_WAITFORKEYPRESS) == 0)
-        {
-            while (kbhit())
-                getch();
-            while (!kbhit());
-        }
-
         else 
         {
             printf("\tError: Invalid Command.\n");
@@ -189,4 +165,10 @@ void RunScript()
     }
 }
 
-
+int main()
+{
+    LoadScript("example.script");
+    RunScript();
+    UnloadScript();
+    return 0;
+}
