@@ -22,7 +22,7 @@ void LoadScript(char * pstrFilename)
 {
     FILE * pScriptFile;
 
-    pScriptFile = fopen(pstrFilename, "rb");
+    check(pScriptFile = fopen(pstrFilename, "rb"), "File I/O error");
 
     while (!feof(pScriptFile))
         if (fgetc(pScriptFile) == '\n')
@@ -30,7 +30,7 @@ void LoadScript(char * pstrFilename)
     ++g_iScriptSize;
 
     fclose(pScriptFile);
-    pScriptFile = fopen(pstrFilename, "rb");
+    check(pScriptFile = fopen(pstrFilename, "r"), "File I/O error");
 
     g_pptrScript = (char **) malloc(g_iScriptSize * sizeof(char *));
 
@@ -41,6 +41,10 @@ void LoadScript(char * pstrFilename)
     }
 
     fclose(pScriptFile);
+
+    return;
+error:
+    exit(0);
 }
 
 void UnloadScript()
@@ -159,7 +163,6 @@ void RunScript()
 
         else 
         {
-            printf("\tError: Invalid Command.\n");
             break;
         }
     }
