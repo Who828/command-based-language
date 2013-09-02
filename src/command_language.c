@@ -167,11 +167,3 @@ void RunScript()
         }
     }
 }
-
-int main()
-{
-    LoadScript("example.script");
-    RunScript();
-    UnloadScript();
-    return 0;
-}
